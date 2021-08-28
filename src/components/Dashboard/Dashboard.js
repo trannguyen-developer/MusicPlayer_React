@@ -42,34 +42,37 @@ const Dashboard =  props => {
     const [percentTime, setPercentTime] = useState(0)
     const [valueSlider, setValueSlider] = useState(0)
 
+    // useffect
+    
     const toggleChecked = () => {
         setchecked(!checked)
     }
 
     const clickHandlePlay = () => {
         setBtnPlay(!btnPlay)
-        if(btnPlay) {
-            audioRef.current.pause()
-        } else {
-            audioRef.current.play()
-        }
     }
 
+    console.log(btnPlay);
+    
     const playing = () => {
         setPercentTime(((audioRef.current.currentTime / audioRef.current.duration) * 100).toFixed(1))
     }
 
     const nextSong = () => {
-        setCurrentIndex(currentIndex+1)
-        setBtnPlay(false)
-        audioRef.current.play()
+        setCurrentIndex(currentIndex + 1)
     }
-
+    
     const changeValSlider = (e) => {
         setPercentTime(e.target.value)
-        console.log(e.target.value);
     }
 
+    useEffect(() => {
+        if(btnPlay) {
+            audioRef.current.play()
+        } else {
+            audioRef.current.pause()
+        }
+    },[btnPlay, currentIndex])
     return(
     <div className={`${classes.dashboard} p-3`}>
         <ul className={classes.state}>
@@ -85,14 +88,14 @@ const Dashboard =  props => {
         <div className={`${classes.cd} my-3`}>
             <div className={classes['cd-thumb']} style={{backgroundImage: `url(${props.songs[currentIndex].image})`}}></div>
         </div>
-        <div className={`${classes.control} ${btnPlay && classes.play}`} onClick={clickHandlePlay}>
+        <div className={`${classes.control} ${btnPlay && classes.play}`}>
             <div className={`${classes.btn} btn-repeat`}>
                 <i className={`fas fa-redo-alt`}></i>
             </div>
             <div className={`${classes.btn} btn-prev`}>
                 <i className={`fas fa-step-backward`}></i>
             </div>
-            <div className={`${classes.btn} ${classes['btn-toggle-play']}`}>
+            <div className={`${classes.btn} ${classes['btn-toggle-play']}`} onClick={clickHandlePlay}>
                 <i className={`fas fa-pause ${classes['icon-pause']}`}></i>
                 <i className={`fas fa-play ${classes['icon-play']}`}></i>
             </div>
@@ -105,7 +108,8 @@ const Dashboard =  props => {
         </div>
         <div className="mt-3">
             <PrettoSlider  aria-label="pretto slider" defaultValue={percentTime} onChange={changeValSlider} step={1}/>
-            <audio id="audio" onTimeUpdate={playing} ref={audioRef} src={props.songs[currentIndex].path} ></audio>
+            <audio ref={audioRef} src={props.songs[currentIndex].path} >
+            </audio>
         </div>
         <div className={classes['support-func']}>
             <div className={classes.time}>
