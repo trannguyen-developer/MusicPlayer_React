@@ -4,6 +4,7 @@ import Dashboard from './components/Dashboard/Dashboard'
 import ListMusic from './components/ListMusic/ListMusic'
 
 function App() {
+    
     const songs = [
       {
           name: 'Why not me',
@@ -65,14 +66,14 @@ function App() {
           path: './assest/music/PaidMyDues.mp3',
           image: './assest/images/paidMyDues.png',
       },
-  ]
-  
-  return (
-    <div className="App">
-      <Dashboard songs={songs}/>
-      <ListMusic  songs={songs}/>
-    </div>
-  );
+    ]
+
+    return (
+        <div className="App">
+            <Dashboard songs={songs}/>
+            <ListMusic songs={songs}/>
+        </div>
+    );
 }
 
 export default App;

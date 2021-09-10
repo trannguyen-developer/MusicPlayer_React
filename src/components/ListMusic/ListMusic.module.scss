@@ -7,6 +7,9 @@ $primary-bg: white;
     background-color: #f5f5f5;
     padding: 1.5rem 1rem;
     list-style: none;
+    padding-top: 460px;
+    box-shadow: 0 2px 4px rgb(192, 192, 192);
+    margin: 0;
     .item-song {
         cursor: pointer;
         background-color: $primary-bg;
@@ -14,8 +17,8 @@ $primary-bg: white;
         display: flex;
         align-items: center;
         border-radius: 0.5rem;
-        box-shadow: 0 2px 4px rgb(192, 192, 192);
         margin-bottom: 12px;
+        box-shadow: 0 2px 4px rgb(192, 192, 192);
         .img {
             width: 50px;
             .img-song {

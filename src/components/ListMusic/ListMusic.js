@@ -1,10 +1,24 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import classes from './ListMusic.module.scss'
+import { useSelector, useDispatch } from 'react-redux';
 
 const ListMusic = props => {
+    const index = useSelector(state => state)
+    const dispatch = useDispatch() 
+        
+    const handleClickUpdateSong = (index) => {
+        dispatch({type: 'click', clickSong: index})
+    }
 
-    const itemMusic = props.songs.map((child, index) => 
-        <li className={classes['item-song']} key={index}>
+    useEffect(() => {
+        const activeSong = document.querySelector(`.${classes.active}.${classes['item-song']}`)
+        setTimeout(() => {
+            activeSong.scrollIntoView({behavior: 'smooth', block: 'center'})
+        }, 100)
+    });
+    
+    let itemMusic = props.songs.map((child, i) => 
+        <li className={`${classes['item-song']} ${index === i ? classes.active : ''}`} onClick={() => handleClickUpdateSong(i)} key={i}>
             <div className={classes.img}>
                 <div className={classes['img-song']} style={{backgroundImage:`url(${child.image})`}}>
                 </div>
@@ -22,7 +36,7 @@ const ListMusic = props => {
             </div> 
         </li>
     )
-    
+       
     return(
         <ul className={classes['list-song']}>
             {itemMusic}
