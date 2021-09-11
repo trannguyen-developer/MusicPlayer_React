@@ -117,11 +117,11 @@ const Dashboard =  props => {
 
     const audioUpdateTime = () => {
         setPercentTime(((audioRef.current.currentTime / audioRef.current.duration) * 100).toFixed(1))
-    }  
+    }
 
     const audioEnded = () => {
         if(isRepeat) {
-            dispatch({type: 'repeat'})
+            audioRef.current.load()
             return;
         }
         nextSong()
@@ -163,9 +163,9 @@ const Dashboard =  props => {
     // effect
     useEffect(() => {
         let currentTimeM = Math.floor(audioRef.current.currentTime / 60)
-        let currentTimeS = Math.floor(audioRef.current.currentTime - currentTimeM * 60)
+        let currentTimeS = Math.round(audioRef.current.currentTime - currentTimeM * 60)
         let durationTimeM = Math.floor(audioRef.current.duration / 60)
-        let durationTimeS = Math.floor(audioRef.current.duration - durationTimeM * 60)
+        let durationTimeS = Math.round(audioRef.current.duration - durationTimeM * 60)
         durationTimeM = durationTimeM ? durationTimeM : '00'
         durationTimeS = durationTimeS ? durationTimeS : '00'
         setCurrentTimeMinutes(`0${currentTimeM}`.slice(-2))
@@ -187,7 +187,22 @@ const Dashboard =  props => {
     useEffect(() => {
         if(localStorage.getItem('mode') === 'dark') {
             setChecked(false)
-        } 
+        }
+        window.addEventListener('keydown', function(e) {
+            switch(e.keyCode) {
+                case 32:
+                    setBtnPlay(!btnPlay)
+                    break;
+                case 37:
+                    audioRef.current.currentTime = audioRef.current.currentTime - 5
+                    break;
+                case 39:
+                    audioRef.current.currentTime = audioRef.current.currentTime + 5
+                    break;
+                default:
+                    break;
+            }
+        })
     }, [])
 
     useEffect(() => {

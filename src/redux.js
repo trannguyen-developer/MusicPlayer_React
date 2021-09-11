@@ -13,7 +13,7 @@ const rootReducer = (state = 0, action) => {
         case 'min':
             return action.dataLength - 1
         case 'repeat':
-            return state
+            return action.repeat
         case 'random':
             return action.random
         default: 
