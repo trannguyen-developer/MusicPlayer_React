@@ -1,16 +1,15 @@
-$primary-color: #ff4979;
-$primary-bg: white;
+@import '../../variables.module.scss';
 
 .dashboard {
     position: fixed;
     width: 480px;
-    background-color: #ffffff;
+    background-color: var(--bg-color);
     top: 0;
     .state {
         list-style: none;
         display: inline-block;
         border-radius: 3rem;
-        background-color: #ffe6eb;
+        background-color: var(--primary-blur);
         padding: 0.2rem;
         margin: 4px 0;
         li {
@@ -21,8 +20,8 @@ $primary-bg: white;
             font-weight: bold;
             cursor: pointer;
             &.active {
-                background-color: $primary-color;
-                color: $primary-bg;
+                background-color: var(--primary-bg);
+                color: var(--primary-text);
             }
         }
         .btn-toggle {
@@ -52,14 +51,14 @@ $primary-bg: white;
             color: #666;
             font-size: 1.2rem;
             &.active {
-                color: $primary-color;
+                color: var(--primary-bg);
             }
             &-toggle-play {
                 width: 54px;
                 height: 54px;
                 border-radius: 50%;
-                background-color: $primary-color;
-                color: $primary-bg;
+                background-color: var(--primary-bg);
+                color: var(--primary-text);
                 display:flex;
                 align-items: center;
                 justify-content: center;
@@ -86,11 +85,11 @@ $primary-bg: white;
         margin-top: -12px;
         .time {
             font-size: 12px;
-            color: #333;
+            color: var(--primary-bg);
         }
         .volume {
             transform: rotate(180deg);
-            color: #555;
+            color: var(--primary-bg);
             display: flex;
             align-items: center;
             cursor: pointer;

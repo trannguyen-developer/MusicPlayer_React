@@ -1,5 +1,6 @@
 import React, {useState, useRef, useEffect} from 'react'
 import classes from './Dashboard.module.scss'
+import variable from './Dashboard.module.scss'
 import FormGroup from '@material-ui/core/FormGroup';
 import { withStyles } from '@material-ui/core/styles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -15,7 +16,7 @@ const useStyles = makeStyles({
         width: '52px'
     },
     slider: {
-        color: '#ff4979',
+        color: variable.primaryColor,
         marginBottom: '-3px',
         width: '40px',
         transition: 'all 0.1s linear',
@@ -28,7 +29,7 @@ const Dashboard =  props => {
     
     const PrettoSlider = withStyles({
         root: {
-            color: '#ff4979',
+            color: variable.primaryColor,
         },
         thumb: {
           height: 0,
@@ -57,7 +58,7 @@ const Dashboard =  props => {
     const audioRef = useRef()
     const cdThumb = useRef()
     const cdElement = useRef()
-    const [checked, setchecked] = useState(true)
+    const [checked, setChecked] = useState(true)
     const [btnPlay, setBtnPlay] = useState(false)
     const [percentTime, setPercentTime] = useState(0)
     const [durationTimeSeconds, setDurationTimeSeconds] = useState(0)
@@ -71,9 +72,9 @@ const Dashboard =  props => {
     const [isRandom, setIsRandom] = useState(false)
     const [arrRandom, setArrRandom] = useState([])
 
-    // useffect
+    // function event
     const toggleChecked = () => {
-        setchecked(!checked)
+        setChecked(!checked)
     }
 
     const clickHandlePlay = () => {
@@ -154,6 +155,7 @@ const Dashboard =  props => {
         setIsRandom(!isRandom)
     }
     
+    // effect
     useEffect(() => {
         let currentTimeM = Math.floor(audioRef.current.currentTime / 60)
         let currentTimeS = Math.floor(audioRef.current.currentTime - currentTimeM * 60)
@@ -174,6 +176,14 @@ const Dashboard =  props => {
         } else {
             cdThumb.current.style.animationPlayState = 'paused';
             audioRef.current.pause()
+        }
+    })
+
+    useEffect(() => {
+        if(checked) {
+            document.documentElement.setAttribute('data-theme', 'light')
+        } else {
+            document.documentElement.setAttribute('data-theme', 'dark')
         }
     })
 

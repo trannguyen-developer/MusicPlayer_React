@@ -24,11 +24,11 @@ const ListMusic = props => {
                 </div>
             </div>
             <div className={classes['info-song']}>
-                <div className={classes.author}>
-                {child.singer}
-                </div>
                 <div className={classes['name-song']}>
                 {child.name}
+                </div>
+                <div className={classes.author}>
+                {child.singer}
                 </div>
             </div>
             <div className={classes['info-more']}>
