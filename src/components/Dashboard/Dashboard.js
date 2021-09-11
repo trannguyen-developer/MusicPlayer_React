@@ -75,6 +75,11 @@ const Dashboard =  props => {
     // function event
     const toggleChecked = () => {
         setChecked(!checked)
+        if(checked) {
+            localStorage.setItem('mode', 'dark')
+        } else {
+            localStorage.removeItem('mode')
+        }
     }
 
     const clickHandlePlay = () => {
@@ -180,12 +185,18 @@ const Dashboard =  props => {
     })
 
     useEffect(() => {
+        if(localStorage.getItem('mode') === 'dark') {
+            setChecked(false)
+        } 
+    }, [])
+
+    useEffect(() => {
         if(checked) {
             document.documentElement.setAttribute('data-theme', 'light')
         } else {
             document.documentElement.setAttribute('data-theme', 'dark')
         }
-    })
+    }, [checked])
 
     // volume
     useEffect(() => {
