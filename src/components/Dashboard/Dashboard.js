@@ -53,9 +53,9 @@ const Dashboard = ({ songs }) => {
           />
         </FormGroup>
       </ul>
-      <div>{indexTab === 0 && <Playing songs={songs} />}</div>
-      <div>{indexTab === 1 && <div>Karaoke</div>}</div>
-      <div>{indexTab === 2 && <div>Lyrics</div>}</div>
+      <div>
+        <Playing indexTab={indexTab} songs={songs} />
+      </div>
     </div>
   );
 };

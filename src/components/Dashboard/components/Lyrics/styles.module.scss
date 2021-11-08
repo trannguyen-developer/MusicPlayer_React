@@ -1,0 +1,37 @@
+@import "../../../../variables.module.scss";
+
+.lyrics {
+  width: 100%;
+  margin: 20px 0;
+  height: 363px;
+  overflow-y: scroll;
+  margin-right: -100px;
+  position: relative;
+  right: -14px;
+  ul {
+    margin-right: 16px;
+  }
+  li {
+    font-size: 20px;
+    margin: 18px 0;
+    color: var(--text-lyric);
+    &.active {
+      color: var(--active-lyric);
+      font-weight: 500;
+    }
+  }
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    border-radius: 4px;
+    background: var(--primary-blur);
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--primary-bg);
+    border-radius: 4px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    // background: #555;
+  }
+}

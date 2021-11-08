@@ -4,6 +4,7 @@ import variable from "./styles.module.scss";
 import classes from "./styles.module.scss";
 import { Slider } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
+import Lyrics from "../Lyrics";
 
 const useStyles = makeStyles({
   wrapSlier: {
@@ -20,16 +21,14 @@ const useStyles = makeStyles({
   },
 });
 
-function Playing({ songs }) {
+function Playing({ songs, indexTab }) {
   const styles = useStyles();
-
+  const audioRef = useRef();
   const index = useSelector((state) => state);
   const dispatch = useDispatch();
-  const audioRef = useRef();
   const cdThumb = useRef();
   const cdElement = useRef();
-  const [btnPlay, setBtnPlay] = useState(false);
-  const [percentTime, setPercentTime] = useState(0);
+  const [btnPlay, setBtnPlay] = useState(true);
   const [durationTimeSeconds, setDurationTimeSeconds] = useState(0);
   const [durationTimeMinutes, setDurationTimeMinutes] = useState(0);
   const [currentTimeSeconds, setCurrentTimeSeconds] = useState(0);
@@ -40,6 +39,12 @@ function Playing({ songs }) {
   const [isRepeat, setIsRepeat] = useState(false);
   const [isRandom, setIsRandom] = useState(false);
   const [arrRandom, setArrRandom] = useState([]);
+  const [percentTime, setPercentTime] = useState(0);
+  const [cdRotate, setCdRotate] = useState("paused");
+  const [cdParam, setCDParam] = useState({
+    width: "",
+    opacity: "",
+  });
 
   const PrettoSlider = withStyles({
     root: {
@@ -100,6 +105,14 @@ function Playing({ songs }) {
     dispatch({ type: "giam" });
   };
 
+  const audioEnded = () => {
+    if (isRepeat) {
+      audioRef.current.load();
+      return;
+    }
+    nextSong();
+  };
+
   const audioUpdateTime = () => {
     setPercentTime(
       (
@@ -107,14 +120,6 @@ function Playing({ songs }) {
         100
       ).toFixed(1)
     );
-  };
-
-  const audioEnded = () => {
-    if (isRepeat) {
-      audioRef.current.load();
-      return;
-    }
-    nextSong();
   };
 
   const changeValSlider = (e, newValue) => {
@@ -152,11 +157,11 @@ function Playing({ songs }) {
 
   // effect
   useEffect(() => {
-    let currentTimeM = Math.floor(audioRef.current.currentTime / 60);
+    let currentTimeM = Math.floor(audioRef?.current?.currentTime / 60);
     let currentTimeS = Math.round(
-      audioRef.current.currentTime - currentTimeM * 60
+      audioRef?.current?.currentTime - currentTimeM * 60
     );
-    let durationTimeM = Math.floor(audioRef.current.duration / 60);
+    let durationTimeM = Math.floor(audioRef?.current?.duration / 60);
     let durationTimeS = Math.round(
       audioRef.current.duration - durationTimeM * 60
     );
@@ -171,10 +176,10 @@ function Playing({ songs }) {
   useEffect(() => {
     if (btnPlay) {
       audioRef.current.play();
-      cdThumb.current.style.animationPlayState = "running";
+      setCdRotate("running");
     } else {
-      cdThumb.current.style.animationPlayState = "paused";
       audioRef.current.pause();
+      setCdRotate("paused");
     }
   });
 
@@ -202,31 +207,52 @@ function Playing({ songs }) {
   }, [volume]);
 
   useEffect(() => {
-    const cdElementWith = cdElement.current.offsetWidth;
-    window.addEventListener("scroll", function () {
-      let widthElement = cdElementWith - window.scrollY;
+    const cdElementWith = cdElement?.current?.offsetWidth;
+    document?.addEventListener("scroll", function () {
+      let widthElement = cdElementWith - window?.scrollY;
 
       widthElement = widthElement >= 240 ? 240 : widthElement;
 
       widthElement = widthElement > 0 ? widthElement : "0";
-      cdElement.current.style.width = widthElement + "px";
-      cdElement.current.style.opacity = widthElement / cdElementWith;
+      setCDParam({
+        width: widthElement + "px",
+        opacity: widthElement / cdElementWith,
+      });
     });
+  }, []);
+
+  useEffect(() => {
     let random = Math.floor(Math.random() * songs.length);
     while (random === index) {
       random = Math.floor(Math.random() * songs.length);
     }
     setArrRandom([random]);
   }, []);
+
   return (
     <div className={classes.playing}>
-      <div className={`${classes.cd} my-3`} ref={cdElement}>
+      {indexTab === 0 ? (
         <div
-          className={classes["cd-thumb"]}
-          style={{ backgroundImage: `url(${songs[index].image})` }}
-          ref={cdThumb}
-        ></div>
-      </div>
+          className={`${classes.cd} my-3`}
+          ref={cdElement}
+          style={{ width: cdParam?.width, opacity: cdParam?.opacity }}
+        >
+          <div
+            className={classes["cd-thumb"]}
+            style={{
+              backgroundImage: `url(${songs[index].image})`,
+              animationPlayState: cdRotate,
+            }}
+            ref={cdThumb}
+          ></div>{" "}
+        </div>
+      ) : indexTab === 1 ? (
+        <h3>This feature is updateing</h3>
+      ) : indexTab === 2 ? (
+        <Lyrics />
+      ) : (
+        ""
+      )}
       <div className={`${classes.control} ${btnPlay && classes.play}`}>
         <div
           className={`${classes.btn} btn-repeat ${isRepeat && classes.active}`}
@@ -266,7 +292,7 @@ function Playing({ songs }) {
           onTimeUpdate={audioUpdateTime}
           onEnded={audioEnded}
           src={songs[index].path}
-        ></audio>
+        />
       </div>
       <div className={classes["support-func"]}>
         <div className={classes.time}>
