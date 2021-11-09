@@ -28,7 +28,7 @@ function Playing({ songs, indexTab }) {
   const dispatch = useDispatch();
   const cdThumb = useRef();
   const cdElement = useRef();
-  const [btnPlay, setBtnPlay] = useState(true);
+  const [btnPlay, setBtnPlay] = useState(false);
   const [durationTimeSeconds, setDurationTimeSeconds] = useState(0);
   const [durationTimeMinutes, setDurationTimeMinutes] = useState(0);
   const [currentTimeSeconds, setCurrentTimeSeconds] = useState(0);
@@ -181,7 +181,7 @@ function Playing({ songs, indexTab }) {
       audioRef.current.pause();
       setCdRotate("paused");
     }
-  });
+  }, [btnPlay, index]);
 
   useEffect(() => {
     window.addEventListener("keydown", function (e) {
@@ -199,6 +199,24 @@ function Playing({ songs, indexTab }) {
           break;
       }
     });
+
+    return () => {
+      window.removeEventListener("keydown", function (e) {
+        switch (e.keyCode) {
+          case 32:
+            setBtnPlay(!btnPlay);
+            break;
+          case 37:
+            audioRef.current.currentTime = audioRef.current.currentTime - 5;
+            break;
+          case 39:
+            audioRef.current.currentTime = audioRef.current.currentTime + 5;
+            break;
+          default:
+            break;
+        }
+      });
+    };
   }, []);
 
   // volume
@@ -227,16 +245,12 @@ function Playing({ songs, indexTab }) {
       random = Math.floor(Math.random() * songs.length);
     }
     setArrRandom([random]);
-  }, []);
+  }, [index, songs.length]);
 
   return (
     <div className={classes.playing}>
       {indexTab === 0 ? (
-        <div
-          className={`${classes.cd} my-3`}
-          ref={cdElement}
-          style={{ width: cdParam?.width, opacity: cdParam?.opacity }}
-        >
+        <div className={`${classes.cd} my-3`} ref={cdElement} style={cdParam}>
           <div
             className={classes["cd-thumb"]}
             style={{
@@ -249,7 +263,10 @@ function Playing({ songs, indexTab }) {
       ) : indexTab === 1 ? (
         <h3>This feature is updateing</h3>
       ) : indexTab === 2 ? (
-        <Lyrics />
+        <Lyrics
+          currentTimeAudio={audioRef.current.currentTime.toFixed(2)}
+          indexSong={index}
+        />
       ) : (
         ""
       )}

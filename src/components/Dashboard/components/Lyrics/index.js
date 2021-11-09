@@ -1,36 +1,62 @@
-import React, { useEffect, useState } from "react";
-import { lyricsWhyNotMe } from "../../constant";
+import React, { useEffect, useState, useRef } from "react";
+import { lyricSongs } from "../../constant";
 import classes from "./styles.module.scss";
 
-const Lyrics = () => {
+const inRange = (number, min, max) => {
+  return number >= min && number <= max;
+};
+
+const Lyrics = ({ currentTimeAudio, indexSong }) => {
   const [indexLyricActive, setIndexLyricAcitve] = useState(0);
+  const [screenLyricParam, setScreenLyricParam] = useState({
+    height: "",
+    opacity: "",
+  });
+  const screenLyric = useRef(null);
+
   useEffect(() => {
     const lyricsActive = document.querySelector(`.${classes.active}`);
     setTimeout(() => {
-      lyricsActive.scrollIntoView({ behavior: "smooth", block: "center" });
+      lyricsActive?.scrollIntoView({ behavior: "smooth", block: "center" });
     }, 100);
-  });
-
-  useEffect(() => {
-    const updateIndexActive = setInterval(() => {
-      setIndexLyricAcitve(indexLyricActive + 1);
-      console.log("tttt", indexLyricActive);
-    }, 200000);
-
-    return () => {
-      clearInterval(updateIndexActive);
-    };
   }, [indexLyricActive]);
 
+  useEffect(() => {
+    lyricSongs?.[indexSong]?.forEach((child, index) => {
+      if (inRange(currentTimeAudio, ...child.range)) {
+        setIndexLyricAcitve(child.id);
+      }
+    });
+  }, [currentTimeAudio, indexSong]);
+
+  useEffect(() => {
+    const screenLyricHeight = screenLyric?.current?.offsetHeight;
+    document?.addEventListener("scroll", function () {
+      let heightElement = screenLyricHeight - window?.scrollY;
+      heightElement = heightElement >= 252 ? 252 : heightElement;
+
+      heightElement = heightElement > 0 ? heightElement : "0";
+      setScreenLyricParam({
+        height: heightElement + "px",
+        opacity: heightElement / screenLyricHeight,
+      });
+    });
+  }, []);
+
+  useEffect(() => {
+    console.log("currentTimeAudio", Math.floor(currentTimeAudio));
+  }, [currentTimeAudio]);
+
   return (
-    <div className={classes.lyrics}>
+    <div className={classes.lyrics} ref={screenLyric} style={screenLyricParam}>
       <ul>
-        {lyricsWhyNotMe.map((lyric, index) => (
+        {console.log("indexLyricActive", indexLyricActive)}
+        {lyricSongs?.[indexSong]?.map((lyric) => (
           <li
-            className={indexLyricActive === index && classes.active}
-            key={index}
+            className={indexLyricActive === lyric.id && classes.active}
+            key={lyric.id}
           >
-            {lyric}
+            {lyric.text}
           </li>
         ))}
       </ul>
